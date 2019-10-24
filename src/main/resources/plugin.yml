@@ -1,0 +1,26 @@
+name: KitsPeriod
+author: Trophonix
+version: 1.5
+main: com.trophonix.kitsperiod.Main
+commands:
+   createkit:
+      description: Create a kit
+      usage: /<command> <kit name>
+   modifykit:
+      description: Modify a kit
+      usage: /<command> <kit name>
+   kit:
+      description: Take a kit
+      usage: /<command>
+   deletekit:
+      description: Delete a kit
+      usage: /<command> <kit name>
+   kiticon:
+      description: Set a kit's icon in the /kit menu
+      usage: /<command> <kit name>
+   kitperm:
+      description: Set a kit's permission node
+      usage: /<command> <kit name> [permission]
+   kitcooldown:
+      description: Set a kit's cooldown
+      usage: /<command> <name> <cooldown (#d#h#m#s or similar)>
