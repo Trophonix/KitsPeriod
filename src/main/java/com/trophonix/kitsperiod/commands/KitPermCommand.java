@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.trophonix.kitsperiod.KitManager;
+import com.trophonix.kitsperiod.Main;
 
 public class KitPermCommand implements CommandExecutor {
 
@@ -19,20 +19,20 @@ public class KitPermCommand implements CommandExecutor {
 		}
 		
 		if (args.length == 1) {
-			if (!KitManager.kitExists(args[0])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[0])) {
 				sender.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[0] + ChatColor.RED + " does not exist.");
 				return true;
 			}
 			
-			KitManager.clearPerm(args[0]);
+			Main.getInstance().getKitManager().clearPerm(args[0]);
 			sender.sendMessage(ChatColor.YELLOW + "Permission of kit " + ChatColor.BLUE + args[0] + ChatColor.YELLOW + " has been cleared.");
 		} else if (args.length > 1) {
-			if (!KitManager.kitExists(args[0])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[0])) {
 				sender.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[0] + ChatColor.RED + " does not exist.");
 				return true;
 			}
 			
-			KitManager.setPerm(args[0], args[1]);
+			Main.getInstance().getKitManager().setPerm(args[0], args[1]);
 			sender.sendMessage(ChatColor.YELLOW + "Permission of kit " + ChatColor.BLUE + args[0] + ChatColor.YELLOW + " has been set to " + args[1]);
 			return true;
 		}

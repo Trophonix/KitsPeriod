@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.trophonix.kitsperiod.KitManager;
+import com.trophonix.kitsperiod.Main;
 
 public class ModifyKitCommand implements CommandExecutor {
 
@@ -24,11 +25,11 @@ public class ModifyKitCommand implements CommandExecutor {
 		}
 		
 		if (args.length > 0) {
-			if (!KitManager.kitExists(args[0])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[0])) {
 				p.sendMessage(ChatColor.RED + "That kit does not exist. Use /createkit " + args[0] + " to make it.");
 				return true;
 			}
-			p.openInventory(KitManager.modifyKit(args[0]));
+			p.openInventory(Main.getInstance().getKitManager().modifyKit(args[0]));
 			return true;
 		}
 		

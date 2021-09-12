@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.trophonix.kitsperiod.KitManager;
+import com.trophonix.kitsperiod.Main;
 
 public class KitCommand implements CommandExecutor {
 
@@ -23,8 +23,15 @@ public class KitCommand implements CommandExecutor {
 			p.sendMessage(ChatColor.RED + "You do not have permission for that command.");
 			return true;
 		}
-		
-		p.openInventory(KitManager.kitSelection(p));
+		if(!Main.getInstance().getConfigFile().contains("kitlist")) {
+			p.sendMessage(ChatColor.RED + "No Kits has been created yet!");
+			return true;
+		}
+		if(Main.getInstance().getConfigFile().getStringList("kitlist").size() == 0) {
+			p.sendMessage(ChatColor.RED + "No Kits has been created yet!");
+			return true;
+		}
+		p.openInventory(Main.getInstance().getKitManager().kitSelection(p));
 		return true;
 	}
 	

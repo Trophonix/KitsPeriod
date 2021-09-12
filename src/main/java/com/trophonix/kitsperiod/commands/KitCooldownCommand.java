@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.trophonix.kitsperiod.KitManager;
+import com.trophonix.kitsperiod.Main;
 import com.trophonix.kitsperiod.Utils;
 
 public class KitCooldownCommand implements CommandExecutor {
@@ -20,23 +20,23 @@ public class KitCooldownCommand implements CommandExecutor {
 		}
 		
 		if (args.length == 1) {
-			if (!KitManager.kitExists(args[0])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[0])) {
 				sender.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[0] + ChatColor.RED + " does not exist.");
 				return true;
 			}
 			
-			KitManager.setCooldown(args[0], 0);
+			Main.getInstance().getKitManager().setCooldown(args[0], 0);
 			sender.sendMessage(ChatColor.YELLOW + "Cooldown of kit " + ChatColor.BLUE + args[0] + ChatColor.YELLOW + " has been removed.");
 			return true;
 		}
 		
 		if (args.length > 1) {
-			if (!KitManager.kitExists(args[0])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[0])) {
 				sender.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[0] + ChatColor.RED + " does not exist.");
 				return true;
 			}
 			
-			KitManager.setCooldown(args[0], Utils.timestampToSeconds(args[1]));
+			Main.getInstance().getKitManager().setCooldown(args[0], Utils.timestampToSeconds(args[1]));
 			sender.sendMessage(ChatColor.YELLOW + "Cooldown of kit " + ChatColor.BLUE + args[0] + ChatColor.YELLOW + " has been set to " + args[1]);
 			return true;
 		}

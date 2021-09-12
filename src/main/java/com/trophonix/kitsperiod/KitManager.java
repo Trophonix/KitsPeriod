@@ -17,45 +17,51 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class KitManager {
+	
+	private Main plugin;
+	
+	public KitManager(Main plugin) {
+		this.plugin = plugin;
+	}
 
-	public static boolean createKit(String name) {
+	public boolean createKit(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (Main.config.contains("kitlist"))
-			kits = Main.config.getStringList("kitlist");
+		if (this.plugin.getConfigFile().contains("kitlist"))
+			kits = this.plugin.getConfigFile().getStringList("kitlist");
 		if (kits.contains(name))
 			return false;
 		else
 			kits.add(name);
-		Main.config.set("kitlist", kits);
-		Main.config.set("kits." + name + ".cooldown", 0);
-		Main.save();
+		this.plugin.getConfigFile().set("kitlist", kits);
+		this.plugin.getConfigFile().set("kits." + name + ".cooldown", 0);
+		this.plugin.save();
 		return true;
 	}
 
-	public static void deleteKit(String name) {
+	public void deleteKit(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (Main.config.contains("kitlist"))
-			kits = Main.config.getStringList("kitlist");
+		if (this.plugin.getConfigFile().contains("kitlist"))
+			kits = this.plugin.getConfigFile().getStringList("kitlist");
 		if (kits.contains(name))
 			kits.remove(name);
-		Main.config.set("kitlist", kits);
-		Main.config.set("kits." + name, null);
-		Main.save();
+		this.plugin.getConfigFile().set("kitlist", kits);
+		this.plugin.getConfigFile().set("kits." + name, null);
+		this.plugin.save();
 	}
 
-	public static Inventory modifyKit(String name) {
+	public Inventory modifyKit(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (Main.config.contains("kitlist"))
-			kits = Main.config.getStringList("kitlist");
+		if (this.plugin.getConfigFile().contains("kitlist"))
+			kits = this.plugin.getConfigFile().getStringList("kitlist");
 		if (!kits.contains(name))
 			return null;
 
 		Map<Integer, ItemStack> items = new HashMap<Integer, ItemStack>();
 		for (int i = 0; i < 36; i++) {
-			if (!Main.config.contains("kits." + name + ".item." + i))
+			if (!this.plugin.getConfigFile().contains("kits." + name + ".item." + i))
 				items.put(i, new ItemStack(Material.AIR));
 			else
-				items.put(i, Main.config.getItemStack("kits." + name + ".item." + i));
+				items.put(i, this.plugin.getConfigFile().getItemStack("kits." + name + ".item." + i));
 		}
 
 		Inventory inventory = Bukkit.createInventory(null, 36, "Modify " + name);
@@ -69,21 +75,21 @@ public class KitManager {
 		return inventory;
 	}
 
-	public static Inventory kitSelection(Player player)  {
+	public Inventory kitSelection(Player player)  {
 		List<String> kits = new ArrayList<String>();
-		if (Main.config.contains("kitlist"))
-			kits = Main.config.getStringList("kitlist");
+		if (this.plugin.getConfigFile().contains("kitlist"))
+			kits = this.plugin.getConfigFile().getStringList("kitlist");
 
 		Inventory inventory = Bukkit.createInventory(null, (int) (Math.ceil(kits.size() / 9d) * 9), "Kit Selection");
 
 		for (int i = 0; i < kits.size(); i++) {
-			if (Main.config.contains("kits." + kits.get(i) + ".permission")
-					&& !(player.hasPermission(Main.config.getString("kits." + kits.get(i) + ".permission"))
+			if (this.plugin.getConfigFile().contains("kits." + kits.get(i) + ".permission")
+					&& !(player.hasPermission(this.plugin.getConfigFile().getString("kits." + kits.get(i) + ".permission"))
 							|| player.isOp()))
 				continue;
 			ItemStack item = new ItemStack(Material.CLAY);
-			if (Main.config.contains("kits." + kits.get(i) + ".icon"))
-				item = Main.config.getItemStack("kits." + kits.get(i) + ".icon");
+			if (this.plugin.getConfigFile().contains("kits." + kits.get(i) + ".icon"))
+				item = this.plugin.getConfigFile().getItemStack("kits." + kits.get(i) + ".icon");
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(ChatColor.BLUE + kits.get(i));
 			if (cooldownOver(player, kits.get(i))) {
@@ -98,15 +104,15 @@ public class KitManager {
 		return inventory;
 	}
 
-	public static void putOnCooldown(Player player, String kit) {
-		FileConfiguration config = Utils.getPlayerConfig(player);
+	public void putOnCooldown(Player player, String kit) {
+		FileConfiguration config = Utils.getPlayerConfig(player.getUniqueId());
 		config.set(kit,(int)
 				(Calendar.getInstance().getTimeInMillis() / 1000));
-		Utils.savePlayerConfig(config, player);
+		plugin.savePlayerConfig(config, player.getUniqueId());
 	}
 
-	public static boolean cooldownOver(Player player, String kit)  {
-		FileConfiguration config = Utils.getPlayerConfig(player);
+	public boolean cooldownOver(Player player, String kit)  {
+		FileConfiguration config = Utils.getPlayerConfig(player.getUniqueId());
 		if (config.contains(kit)) {
 			if (!hasCooldown(kit))
 				return true;
@@ -116,77 +122,77 @@ public class KitManager {
 		return true;
 	}
 
-	public static boolean hasCooldown(String name) {
-		if (!(Main.config.getInt("kits." + name + ".cooldown") == 0))
+	public boolean hasCooldown(String name) {
+		if (!(this.plugin.getConfigFile().getInt("kits." + name + ".cooldown") == 0))
 			return true;
 		return false;
 	}
 
-	public static void kitIcon(String name, ItemStack icon) {
-		Main.config.set("kits." + name + ".icon", icon);
-		Main.save();
+	public void kitIcon(String name, ItemStack icon) {
+		this.plugin.getConfigFile().set("kits." + name + ".icon", icon);
+		this.plugin.save();
 	}
 
-	public static void setPerm(String name, String node) {
-		Main.config.set("kits." + name + ".permission", node);
-		Main.save();
+	public void setPerm(String name, String node) {
+		this.plugin.getConfigFile().set("kits." + name + ".permission", node);
+		this.plugin.save();
 	}
 
-	public static String getPerm(String name) {
-		if (!Main.config.contains("kits." + name + ".permission"))
+	public String getPerm(String name) {
+		if (!this.plugin.getConfigFile().contains("kits." + name + ".permission"))
 			return null;
 
-		return Main.config.getString("kits." + name + ".permission");
+		return this.plugin.getConfigFile().getString("kits." + name + ".permission");
 	}
 
-	public static void clearPerm(String name) {
-		Main.config.set("kits." + name + ".permission", null);
-		Main.save();
+	public void clearPerm(String name) {
+		this.plugin.getConfigFile().set("kits." + name + ".permission", null);
+		this.plugin.save();
 	}
 
-	public static void setCooldown(String name, int cooldownSeconds) {
-		Main.config.set("kits." + name + ".cooldown", cooldownSeconds);
-		Main.save();
+	public void setCooldown(String name, int cooldownSeconds) {
+		this.plugin.getConfigFile().set("kits." + name + ".cooldown", cooldownSeconds);
+		this.plugin.save();
 	}
 
-	public static int getCooldown(String name) {
-		if (!Main.config.contains("kits." + name + ".cooldown"))
+	public int getCooldown(String name) {
+		if (!this.plugin.getConfigFile().contains("kits." + name + ".cooldown"))
 			return 0;
 
-		return Main.config.getInt("kits." + name + ".cooldown");
+		return this.plugin.getConfigFile().getInt("kits." + name + ".cooldown");
 	}
 	
-	public static int getCooldown(String name, Player player) {
+	public int getCooldown(String name, Player player) {
 		if (!hasCooldown(name))
 			return 0;
-		FileConfiguration config = Utils.getPlayerConfig(player);
+		FileConfiguration config = Utils.getPlayerConfig(player.getUniqueId());
 		if (!config.contains(name))
 			return 0;
 		
-		return (int) (config.getInt(name) + Main.config.getInt("kits." + name + ".cooldown") - (Calendar.getInstance().getTimeInMillis() / 1000));
+		return (int) (config.getInt(name) + this.plugin.getConfigFile().getInt("kits." + name + ".cooldown") - (Calendar.getInstance().getTimeInMillis() / 1000));
 	}
 
-	public static List<ItemStack> getContents(String name) {
+	public List<ItemStack> getContents(String name) {
 		List<ItemStack> contents = new ArrayList<ItemStack>();
 		for (int i = 0; i < 36; i++) {
-			if (!Main.config.contains("kits." + name + ".item." + i))
+			if (!this.plugin.getConfigFile().contains("kits." + name + ".item." + i))
 				continue;
-			contents.add(Main.config.getItemStack("kits." + name + ".item." + i));
+			contents.add(this.plugin.getConfigFile().getItemStack("kits." + name + ".item." + i));
 		}
 		return contents;
 	}
 
-	public static void saveKit(String name, ItemStack[] items) {
+	public void saveKit(String name, ItemStack[] items) {
 		for (int i = 0; i < items.length; i++) {
-			Main.config.set("kits." + name + ".item." + i, items[i]);
+			this.plugin.getConfigFile().set("kits." + name + ".item." + i, items[i]);
 		}
-		Main.save();
+		this.plugin.save();
 	}
 
-	public static boolean kitExists(String name) {
+	public boolean kitExists(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (Main.config.contains("kitlist"))
-			kits = Main.config.getStringList("kitlist");
+		if (this.plugin.getConfigFile().contains("kitlist"))
+			kits = this.plugin.getConfigFile().getStringList("kitlist");
 		if (kits.contains(name))
 			return true;
 		return false;

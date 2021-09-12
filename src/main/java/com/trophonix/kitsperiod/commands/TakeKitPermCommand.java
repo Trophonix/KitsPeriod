@@ -28,17 +28,17 @@ public class TakeKitPermCommand implements CommandExecutor {
 				return true;
 			}
 			
-			if (!KitManager.kitExists(args[1])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[1])) {
 				p.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[1] + ChatColor.RED + " does not exist.");
 				return true;
 			}
 			
-			if (KitManager.getPerm(args[1]) == null) {
+			if (Main.getInstance().getKitManager().getPerm(args[1]) == null) {
 				p.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[1] + ChatColor.RED + " does not require a permission.");
 				return true;
 			}
 			
-			p.addAttachment(Main.getInstance(), KitManager.getPerm(args[0]), false);
+			p.addAttachment(Main.getInstance(), Main.getInstance().getKitManager().getPerm(args[0]), false);
 		}
 		
 		sender.sendMessage(ChatColor.RED + "Invalid command. Usage: /takekitperm <player name> <kit name>");

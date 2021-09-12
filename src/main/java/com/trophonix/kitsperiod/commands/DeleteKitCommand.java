@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.trophonix.kitsperiod.KitManager;
+import com.trophonix.kitsperiod.Main;
 
 public class DeleteKitCommand implements CommandExecutor {
 
@@ -18,12 +18,12 @@ public class DeleteKitCommand implements CommandExecutor {
 		}
 		
 		if (args.length > 0) {
-			if (!KitManager.kitExists(args[0])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[0])) {
 				sender.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[0] + ChatColor.RED + " does not exist.");
 				return true;
 			}
 			
-			KitManager.deleteKit(args[0]);
+			Main.getInstance().getKitManager().deleteKit(args[0]);
 			sender.sendMessage(ChatColor.YELLOW + "Kit with name " + ChatColor.BLUE + args[0] + ChatColor.YELLOW + " has been deleted.");
 			return true;
 		}

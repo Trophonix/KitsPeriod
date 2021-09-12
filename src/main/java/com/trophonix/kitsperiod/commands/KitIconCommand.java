@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.trophonix.kitsperiod.KitManager;
+import com.trophonix.kitsperiod.Main;
 
 public class KitIconCommand implements CommandExecutor {
 
@@ -27,7 +28,7 @@ public class KitIconCommand implements CommandExecutor {
 		Player p = (Player)sender;
 		
 		if (args.length > 0) {
-			if (!KitManager.kitExists(args[0])) {
+			if (!Main.getInstance().getKitManager().kitExists(args[0])) {
 				p.sendMessage(ChatColor.RED + "Kit with name " + ChatColor.GRAY + args[0] + ChatColor.RED + " does not exist.");
 				return true;
 			}
@@ -37,7 +38,7 @@ public class KitIconCommand implements CommandExecutor {
 				return true;
 			}
 			
-			KitManager.kitIcon(args[0], new ItemStack(p.getItemInHand().getType(), 1));
+			Main.getInstance().getKitManager().kitIcon(args[0], new ItemStack(p.getItemInHand().getType(), 1));
 			p.sendMessage(ChatColor.YELLOW + "Icon of kit " + ChatColor.BLUE + args[0] + ChatColor.YELLOW + " has been set to the item in your hand.");
 			return true;
 		}

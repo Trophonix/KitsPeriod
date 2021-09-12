@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.trophonix.kitsperiod.KitManager;
+import com.trophonix.kitsperiod.Main;
 
 public class CreateKitCommand implements CommandExecutor {
 
@@ -17,7 +17,7 @@ public class CreateKitCommand implements CommandExecutor {
 		}
 		
 		if (args.length > 0) {
-			if (KitManager.createKit(args[0])) {
+			if (Main.getInstance().getKitManager().createKit(args[0])) {
 				sender.sendMessage(ChatColor.YELLOW + "Kit with name " + ChatColor.BLUE + args[0] + ChatColor.YELLOW + " has been created!");
 				return true;
 			} else {

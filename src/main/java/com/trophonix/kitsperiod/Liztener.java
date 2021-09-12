@@ -13,9 +13,14 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 public class Liztener implements Listener {
+	
+	private Main plugin;
+	private KitManager kitManager;
 
-	public Liztener() {
-		Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+	public Liztener(Main plugin) {
+		this.plugin = plugin;
+		plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
+		this.kitManager = plugin.getKitManager();
 	}
 
 	@EventHandler
@@ -31,14 +36,14 @@ public class Liztener implements Listener {
 			e.setCancelled(true);
 			String kitName = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
 
-			if (!KitManager.cooldownOver(p, kitName)) {
+			if (!kitManager.cooldownOver(p, kitName)) {
 				p.closeInventory();
 				p.sendMessage(ChatColor.GRAY + "You can use that kit again in: " + ChatColor.RED
-						+ Utils.secondsToTimestamp(KitManager.getCooldown(kitName, p)));
+						+ Utils.secondsToTimestamp(kitManager.getCooldown(kitName, p)));
 				return;
 			}
 
-			List<ItemStack> kit = KitManager.getContents(kitName);
+			List<ItemStack> kit = kitManager.getContents(kitName);
 
 			for (int i = 0; i < kit.size(); i++) {
 				p.getInventory().addItem(kit.get(i));
@@ -46,7 +51,7 @@ public class Liztener implements Listener {
 			p.sendMessage(ChatColor.YELLOW + "You have been given the contents of kit " + ChatColor.BLUE + kitName);
 			p.closeInventory();
 
-			KitManager.putOnCooldown(p, kitName);
+			kitManager.putOnCooldown(p, kitName);
 		}
 	}
 
@@ -57,10 +62,10 @@ public class Liztener implements Listener {
 
 		if (view.getTitle().toLowerCase().contains("modify")) {
 			String name = view.getTitle().replace("Modify ", "");
-			KitManager.saveKit(name, inv.getContents());
+			kitManager.saveKit(name, inv.getContents());
 			e.getPlayer().sendMessage(ChatColor.YELLOW + "Kit with name " + ChatColor.BLUE + name + ChatColor.YELLOW
 					+ " has been saved.");
-			Main.save();
+			this.plugin.save();
 		}
 	}
 

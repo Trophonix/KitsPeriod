@@ -2,10 +2,10 @@ package com.trophonix.kitsperiod;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 public class Utils {
 
@@ -113,9 +113,9 @@ public class Utils {
 		return (d * 24 * 60 * 60) + (h * 60 * 60) + (m * 60) + s;
 	}
 
-	public static FileConfiguration getPlayerConfig(Player player) {
+	public static FileConfiguration getPlayerConfig(UUID id) {
 		File file = new File("plugins" + File.separator + "kitsperiod" + File.separator + "playerdata" + File.separator
-				+ player.getUniqueId() + ".yml");
+				+ id.toString() + ".yml");
 		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 		if (!file.exists()) {
 			try {
@@ -125,17 +125,6 @@ public class Utils {
 			}
 		}
 		return config;
-	}
-
-	public static void savePlayerConfig(FileConfiguration config, Player player) {
-		File file = new File("plugins" + File.separator + "kitsperiod" + File.separator + "playerdata" + File.separator
-				+ player.getUniqueId() + ".yml");
-		try {
-			config.save(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 }
