@@ -20,6 +20,7 @@ import com.trophonix.kitsperiod.commands.ModifyKitCommand;
 
 public class Main extends JavaPlugin {
 
+	private FileConfiguration kitConfig;
 	private FileConfiguration config;
 	private KitManager kitManager;
 	private static Main main;
@@ -39,15 +40,21 @@ public class Main extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		save();
+		try {
+			config.save(new File("plugins" + File.separator + "kitsperiod" + File.separator + "kitConfig" + ".yml"));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			FileConfiguration config = Utils.getPlayerConfig(p.getUniqueId());
-			savePlayerConfig(config, p.getUniqueId());
+			savePlayerConfigAsync(config, p.getUniqueId());
 		}
 	}
 	
 	public void initialize() {
-		config = YamlConfiguration.loadConfiguration(new File("plugins" + File.separator + "kitsperiod" + File.separator + "config" + ".yml"));
+		Config con = new Config(this);
+		config = con.getConfig();
+		kitConfig = YamlConfiguration.loadConfiguration(new File("plugins" + File.separator + "kitsperiod" + File.separator + "kitConfig" + ".yml"));
 		this.kitManager = new KitManager(this);
 		getCommand("createkit").setExecutor(new CreateKitCommand());
 		getCommand("modifykit").setExecutor(new ModifyKitCommand());
@@ -56,19 +63,23 @@ public class Main extends JavaPlugin {
 		getCommand("kiticon").setExecutor(new KitIconCommand());
 		getCommand("kitperm").setExecutor(new KitPermCommand());
 		getCommand("kitcooldown").setExecutor(new KitCooldownCommand());
-		
+		//Need to create listener in the listener class for OnJoin, check if player has a config file, and if not, give them any first join kits.
 		new Liztener(this);
 	}
 	
 	public void save() {
-		Bukkit.getScheduler().runTaskAsynchronously(this, () -> saveAsync(this.config));
+		Bukkit.getScheduler().runTaskAsynchronously(this, () -> saveAsync(this.kitConfig));
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			FileConfiguration config = Utils.getPlayerConfig(p.getUniqueId());
+			savePlayerConfig(config, p.getUniqueId());
+		}
 	}
 	
-	public void saveAsync(FileConfiguration config) {
+	private void saveAsync(FileConfiguration config) {
 		try {
-			config.save(new File("plugins" + File.separator + "kitsperiod" + File.separator + "config" + ".yml"));
+			config.save(new File("plugins" + File.separator + "kitsperiod" + File.separator + "kitConfig" + ".yml"));
 		} catch (Exception ex) {
-			
+			ex.printStackTrace();
 		}
 	}
 	
@@ -76,7 +87,7 @@ public class Main extends JavaPlugin {
 		Bukkit.getScheduler().runTaskAsynchronously(this, () -> savePlayerConfigAsync(config, id));
 	}
 	
-    public void savePlayerConfigAsync(FileConfiguration config, UUID id) {
+    private void savePlayerConfigAsync(FileConfiguration config, UUID id) {
 		File file = new File("plugins" + File.separator + "kitsperiod" + File.separator + "playerdata" + File.separator
 				+ id.toString() + ".yml");
 		try {
@@ -85,6 +96,10 @@ public class Main extends JavaPlugin {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public FileConfiguration getKitConfigFile() {
+		return this.kitConfig;
 	}
 	
 	public FileConfiguration getConfigFile() {

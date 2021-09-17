@@ -26,42 +26,42 @@ public class KitManager {
 
 	public boolean createKit(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (this.plugin.getConfigFile().contains("kitlist"))
-			kits = this.plugin.getConfigFile().getStringList("kitlist");
+		if (this.plugin.getKitConfigFile().contains("kitlist"))
+			kits = this.plugin.getKitConfigFile().getStringList("kitlist");
 		if (kits.contains(name))
 			return false;
 		else
 			kits.add(name);
-		this.plugin.getConfigFile().set("kitlist", kits);
-		this.plugin.getConfigFile().set("kits." + name + ".cooldown", 0);
+		this.plugin.getKitConfigFile().set("kitlist", kits);
+		this.plugin.getKitConfigFile().set("kits." + name + ".cooldown", 0);
 		this.plugin.save();
 		return true;
 	}
 
 	public void deleteKit(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (this.plugin.getConfigFile().contains("kitlist"))
-			kits = this.plugin.getConfigFile().getStringList("kitlist");
+		if (this.plugin.getKitConfigFile().contains("kitlist"))
+			kits = this.plugin.getKitConfigFile().getStringList("kitlist");
 		if (kits.contains(name))
 			kits.remove(name);
-		this.plugin.getConfigFile().set("kitlist", kits);
-		this.plugin.getConfigFile().set("kits." + name, null);
+		this.plugin.getKitConfigFile().set("kitlist", kits);
+		this.plugin.getKitConfigFile().set("kits." + name, null);
 		this.plugin.save();
 	}
 
 	public Inventory modifyKit(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (this.plugin.getConfigFile().contains("kitlist"))
-			kits = this.plugin.getConfigFile().getStringList("kitlist");
+		if (this.plugin.getKitConfigFile().contains("kitlist"))
+			kits = this.plugin.getKitConfigFile().getStringList("kitlist");
 		if (!kits.contains(name))
 			return null;
 
 		Map<Integer, ItemStack> items = new HashMap<Integer, ItemStack>();
 		for (int i = 0; i < 36; i++) {
-			if (!this.plugin.getConfigFile().contains("kits." + name + ".item." + i))
+			if (!this.plugin.getKitConfigFile().contains("kits." + name + ".item." + i))
 				items.put(i, new ItemStack(Material.AIR));
 			else
-				items.put(i, this.plugin.getConfigFile().getItemStack("kits." + name + ".item." + i));
+				items.put(i, this.plugin.getKitConfigFile().getItemStack("kits." + name + ".item." + i));
 		}
 
 		Inventory inventory = Bukkit.createInventory(null, 36, "Modify " + name);
@@ -77,19 +77,19 @@ public class KitManager {
 
 	public Inventory kitSelection(Player player)  {
 		List<String> kits = new ArrayList<String>();
-		if (this.plugin.getConfigFile().contains("kitlist"))
-			kits = this.plugin.getConfigFile().getStringList("kitlist");
+		if (this.plugin.getKitConfigFile().contains("kitlist"))
+			kits = this.plugin.getKitConfigFile().getStringList("kitlist");
 
 		Inventory inventory = Bukkit.createInventory(null, (int) (Math.ceil(kits.size() / 9d) * 9), "Kit Selection");
 
 		for (int i = 0; i < kits.size(); i++) {
-			if (this.plugin.getConfigFile().contains("kits." + kits.get(i) + ".permission")
-					&& !(player.hasPermission(this.plugin.getConfigFile().getString("kits." + kits.get(i) + ".permission"))
+			if (this.plugin.getKitConfigFile().contains("kits." + kits.get(i) + ".permission")
+					&& !(player.hasPermission(this.plugin.getKitConfigFile().getString("kits." + kits.get(i) + ".permission"))
 							|| player.isOp()))
 				continue;
 			ItemStack item = new ItemStack(Material.CLAY);
-			if (this.plugin.getConfigFile().contains("kits." + kits.get(i) + ".icon"))
-				item = this.plugin.getConfigFile().getItemStack("kits." + kits.get(i) + ".icon");
+			if (this.plugin.getKitConfigFile().contains("kits." + kits.get(i) + ".icon"))
+				item = this.plugin.getKitConfigFile().getItemStack("kits." + kits.get(i) + ".icon");
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(ChatColor.BLUE + kits.get(i));
 			if (cooldownOver(player, kits.get(i))) {
@@ -123,43 +123,43 @@ public class KitManager {
 	}
 
 	public boolean hasCooldown(String name) {
-		if (!(this.plugin.getConfigFile().getInt("kits." + name + ".cooldown") == 0))
+		if (!(this.plugin.getKitConfigFile().getInt("kits." + name + ".cooldown") == 0))
 			return true;
 		return false;
 	}
 
 	public void kitIcon(String name, ItemStack icon) {
-		this.plugin.getConfigFile().set("kits." + name + ".icon", icon);
+		this.plugin.getKitConfigFile().set("kits." + name + ".icon", icon);
 		this.plugin.save();
 	}
 
 	public void setPerm(String name, String node) {
-		this.plugin.getConfigFile().set("kits." + name + ".permission", node);
+		this.plugin.getKitConfigFile().set("kits." + name + ".permission", node);
 		this.plugin.save();
 	}
 
 	public String getPerm(String name) {
-		if (!this.plugin.getConfigFile().contains("kits." + name + ".permission"))
+		if (!this.plugin.getKitConfigFile().contains("kits." + name + ".permission"))
 			return null;
 
-		return this.plugin.getConfigFile().getString("kits." + name + ".permission");
+		return this.plugin.getKitConfigFile().getString("kits." + name + ".permission");
 	}
 
 	public void clearPerm(String name) {
-		this.plugin.getConfigFile().set("kits." + name + ".permission", null);
+		this.plugin.getKitConfigFile().set("kits." + name + ".permission", null);
 		this.plugin.save();
 	}
 
 	public void setCooldown(String name, int cooldownSeconds) {
-		this.plugin.getConfigFile().set("kits." + name + ".cooldown", cooldownSeconds);
+		this.plugin.getKitConfigFile().set("kits." + name + ".cooldown", cooldownSeconds);
 		this.plugin.save();
 	}
 
 	public int getCooldown(String name) {
-		if (!this.plugin.getConfigFile().contains("kits." + name + ".cooldown"))
+		if (!this.plugin.getKitConfigFile().contains("kits." + name + ".cooldown"))
 			return 0;
 
-		return this.plugin.getConfigFile().getInt("kits." + name + ".cooldown");
+		return this.plugin.getKitConfigFile().getInt("kits." + name + ".cooldown");
 	}
 	
 	public int getCooldown(String name, Player player) {
@@ -169,30 +169,30 @@ public class KitManager {
 		if (!config.contains(name))
 			return 0;
 		
-		return (int) (config.getInt(name) + this.plugin.getConfigFile().getInt("kits." + name + ".cooldown") - (Calendar.getInstance().getTimeInMillis() / 1000));
+		return (int) (config.getInt(name) + this.plugin.getKitConfigFile().getInt("kits." + name + ".cooldown") - (Calendar.getInstance().getTimeInMillis() / 1000));
 	}
 
 	public List<ItemStack> getContents(String name) {
 		List<ItemStack> contents = new ArrayList<ItemStack>();
 		for (int i = 0; i < 36; i++) {
-			if (!this.plugin.getConfigFile().contains("kits." + name + ".item." + i))
+			if (!this.plugin.getKitConfigFile().contains("kits." + name + ".item." + i))
 				continue;
-			contents.add(this.plugin.getConfigFile().getItemStack("kits." + name + ".item." + i));
+			contents.add(this.plugin.getKitConfigFile().getItemStack("kits." + name + ".item." + i));
 		}
 		return contents;
 	}
 
 	public void saveKit(String name, ItemStack[] items) {
 		for (int i = 0; i < items.length; i++) {
-			this.plugin.getConfigFile().set("kits." + name + ".item." + i, items[i]);
+			this.plugin.getKitConfigFile().set("kits." + name + ".item." + i, items[i]);
 		}
 		this.plugin.save();
 	}
 
 	public boolean kitExists(String name) {
 		List<String> kits = new ArrayList<String>();
-		if (this.plugin.getConfigFile().contains("kitlist"))
-			kits = this.plugin.getConfigFile().getStringList("kitlist");
+		if (this.plugin.getKitConfigFile().contains("kitlist"))
+			kits = this.plugin.getKitConfigFile().getStringList("kitlist");
 		if (kits.contains(name))
 			return true;
 		return false;

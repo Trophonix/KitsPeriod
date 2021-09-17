@@ -7,7 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.trophonix.kitsperiod.KitManager;
 import com.trophonix.kitsperiod.Main;
 
 public class TakeKitPermCommand implements CommandExecutor {

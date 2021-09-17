@@ -1,13 +1,18 @@
 package com.trophonix.kitsperiod;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -67,6 +72,36 @@ public class Liztener implements Listener {
 					+ " has been saved.");
 			this.plugin.save();
 		}
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		File file = new File("plugins" + File.separator + "kitsperiod" + File.separator + "playerdata" + File.separator
+				+ player.getUniqueId().toString() + ".yml");
+		if(!file.exists()) {
+			List<String> kits = new ArrayList<String>();
+			if (this.plugin.getKitConfigFile().contains("kitlist"))
+				kits = this.plugin.getKitConfigFile().getStringList("kitlist");
+			if(!kits.isEmpty()) {
+				for(String name : kits) {
+					if(player.hasPermission("kits." + name + ".firstjoin")) {
+						List<ItemStack> kit = kitManager.getContents(name);
+						for (int i = 0; i < kit.size(); i++) {
+							player.getInventory().addItem(kit.get(i));
+						}
+						player.sendMessage(ChatColor.YELLOW + "You have been given the contents of kit " + ChatColor.BLUE + name);
+						kitManager.putOnCooldown(player, name);
+					}
+				}
+			}
+			FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+			try {
+				config.save(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}	
 	}
 
 }

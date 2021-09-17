@@ -23,11 +23,11 @@ public class KitCommand implements CommandExecutor {
 			p.sendMessage(ChatColor.RED + "You do not have permission for that command.");
 			return true;
 		}
-		if(!Main.getInstance().getConfigFile().contains("kitlist")) {
+		if(!Main.getInstance().getKitConfigFile().contains("kitlist")) {
 			p.sendMessage(ChatColor.RED + "No Kits has been created yet!");
 			return true;
 		}
-		if(Main.getInstance().getConfigFile().getStringList("kitlist").size() == 0) {
+		if(Main.getInstance().getKitConfigFile().getStringList("kitlist").size() == 0) {
 			p.sendMessage(ChatColor.RED + "No Kits has been created yet!");
 			return true;
 		}
