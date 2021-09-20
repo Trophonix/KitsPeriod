@@ -17,7 +17,7 @@ public class Config
 
     public Config(Main plugin) {
     	if(pluginConfigFile==null) {
-    		pluginConfigFile = new File(plugin.getDataFolder(), config);
+    		pluginConfigFile = new File("plugins" + File.separator + "kitsperiod" + File.separator + config);
     	}
     	if (!pluginConfigFile.exists()) {
     		plugin.saveResource(config, false);
