@@ -1,0 +1,4 @@
+# Whether or not to save the kit configs and player data periodically
+SavePeriodically: false
+# If SavePeriodically is set to true, how long in second until each data save
+SaveTime: 600
